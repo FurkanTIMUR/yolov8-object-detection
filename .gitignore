@@ -2,12 +2,14 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.pt
 
 # Virtual environment
 venv/
 env/
 .venv/
 ENV/
+camv/
 
 # Distribution / packaging
 .Python
@@ -15,6 +17,7 @@ build/
 develop-eggs/
 dist/
 downloads/
+weights/
 eggs/
 .eggs/
 lib/
