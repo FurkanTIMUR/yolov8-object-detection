@@ -5,7 +5,7 @@
 
 A user-friendly desktop application for real-time and file-based object detection using the YOLOv8 model. This tool provides an intuitive graphical user interface (GUI) to perform object detection on webcam feeds, videos, and images.
 
-![App Screenshot](./images/app-screenshot.png)
+![App Screenshot](./images/app_ss.png)
 *(Note: It is highly recommended to replace the link above with a screenshot of your running application for a more professional look.)*
 
 ## Features
