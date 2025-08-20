@@ -5,7 +5,7 @@
 
 A user-friendly desktop application for real-time and file-based object detection using the YOLOv8 model. This tool provides an intuitive graphical user interface (GUI) to perform object detection on webcam feeds, videos, and images.
 
-![App Screenshot](https://i.imgur.com/your-app-screenshot.png)
+![App Screenshot](./images/app-screenshot.png)
 *(Note: It is highly recommended to replace the link above with a screenshot of your running application for a more professional look.)*
 
 ## Features
@@ -76,3 +76,17 @@ python app.py
 
 ## Author
 Developed by [Furkan Timur](https://github.com/FurkanTIMUR)
+
+MIT License
+
+Copyright (c) 2025 Furkan Timur
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+[...]
+

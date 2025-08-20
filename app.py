@@ -1,4 +1,5 @@
 import cv2
+import time
 import numpy as np
 import datetime
 import tkinter as tk
@@ -65,10 +66,21 @@ class App:
         self.status_bar = tk.Label(self.window, text="Hazır", bd=1, relief=tk.SUNKEN, anchor=tk.W)
         self.status_bar.pack(side=tk.BOTTOM, fill=tk.X)
         self.progress_bar = ttk.Progressbar(self.window, orient=tk.HORIZONTAL, length=200, mode='determinate')
+        # Video oynatma kontrolleri için yeni çerçeve
+        self.video_controls_frame = tk.Frame(self.window, bg="#444")
+        
+        # Oynat/Duraklat butonu
+        self.play_pause_button = tk.Button(self.video_controls_frame, text="Durdur", width=12, command=self.toggle_pause)
+        self.play_pause_button.pack(side=tk.LEFT, padx=10, pady=5)
+        
+        # Video'yu bitir butonu
+        self.stop_video_button = tk.Button(self.video_controls_frame, text="Bitir", width=12, command=self.stop_camera)
+        self.stop_video_button.pack(side=tk.LEFT, padx=10, pady=5)
         self.camera = None
         
         self.is_recording = False
         self.video_writer = None
+        self.paused = False
         self.models_loaded = False 
         
         #YOLOv8 modelini yükler...
@@ -93,6 +105,19 @@ class App:
                 cap.release()
         return available_cameras
 
+    # Oynat/Duraklat durumunu değiştiren metot
+    def toggle_pause(self):
+        # self.paused değişkeninin mevcut durumunu tersine çevirir
+        self.paused = not self.paused 
+        
+        # Yeni duruma göre butonun metnini günceller
+        if self.paused:
+            # Eğer duraklatıldıysa, butona "Devam Et" yaz
+            self.play_pause_button.config(text="Devam Et") 
+        else:
+            # Eğer devam ediyorsa, butona "Durdur" yaz
+            self.play_pause_button.config(text="Durdur") 
+    
     def update_alpha(self, value):
         self.alpha = int(value) / 100.0
     
@@ -133,6 +158,13 @@ class App:
         # Kamerayı durdurma mantığı
         if self.running:
             self.running = False
+            
+            # Kontrol çerçevesini gizle
+            self.video_controls_frame.pack_forget()
+
+            # Duraklatma durumunu sıfırla ki sonraki video doğru başlasın
+            self.paused = False
+            self.play_pause_button.config(text="Durdur")
             
             if self.camera:
                 self.camera.release()
@@ -298,8 +330,10 @@ class App:
             messagebox.showerror("Hata", "Video dosyası açılamadı.")
             self.stop_camera()
             return
-
+        # Video kontrollerini görünür yap
+        self.video_controls_frame.pack(side=tk.BOTTOM, pady=5)
         # Video dosyasının boyutlarını al
+        
         original_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
         original_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
         self.frame_width = original_width
@@ -318,6 +352,15 @@ class App:
     def _process_stream(self, cap):
         # Ortak video işleme döngüsü
         while cap.isOpened() and self.running:
+            
+            # Eğer oynatıcı duraklatıldıysa, durum değişene kadar burada bekle
+            while self.paused and self.running:
+                # İşlemciyi yormamak için kısa bir süre bekle
+                time.sleep(0.1) 
+                # Arayüzün donmaması için pencere olaylarını güncelle
+                self.window.update_idletasks()
+                self.window.update()
+            
             ret, frame = cap.read()
             if not ret:
                 break
